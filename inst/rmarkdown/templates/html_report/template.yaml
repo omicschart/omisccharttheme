@@ -1,0 +1,4 @@
+name: "OmicsChart HTML Report"
+version: 0.0.1
+author: "Tanya Aneichyk"
+description: "A custom OmicsChart RMarkdown theme for HTML reports"

@@ -1,0 +1,55 @@
+\usepackage{titling}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{mdframed}
+
+\pretitle{\begin{center}\LARGE\includegraphics[width=12cm]{omicschart-logo.png}\\[\bigskipamount]}
+  \posttitle{\end{center}}
+
+  % warning colors
+\definecolor{warningbg}{HTML}{FFF8E1}
+\definecolor{warningborder}{HTML}{FFB300}
+
+% info colors
+\definecolor{infobg}{HTML}{E3F2FD}
+\definecolor{infoborder}{HTML}{2196F3}
+
+\newenvironment{warning}
+{\begin{mdframed}[
+    linewidth=2pt,
+    leftline=true,
+    rightline=false,
+    topline=false,
+    bottomline=false,
+    linecolor=warningborder,
+    backgroundcolor=warningbg,
+    innerleftmargin=15pt,
+    innerrightmargin=15pt,
+    innertopmargin=15pt,
+    innerbottommargin=15pt,
+    roundcorner=4pt,
+    font=\sffamily
+  ]
+
+}
+{\end{mdframed}}
+
+% Info environment
+\newenvironment{info}
+{\begin{mdframed}[
+    linewidth=2pt,
+    leftline=true,
+    rightline=false,
+    topline=false,
+    bottomline=false,
+    linecolor=infoborder,
+    backgroundcolor=infobg,
+    innerleftmargin=15pt,
+    innerrightmargin=15pt,
+    innertopmargin=15pt,
+    innerbottommargin=15pt,
+    roundcorner=4pt,
+    font=\sffamily
+  ]
+}
+{\end{mdframed}}

@@ -1,0 +1,10 @@
+---
+title: "Report Title"
+author: "Author: Name @ OmicsChart, [ Email them ](mailto:email@omicschart.com), [ Schedule a call ](https://calendly.com/link/) "
+date: "Last updated: `r Sys.Date()`"
+output: omicscharttheme::pdf_report
+---
+
+# Introduction
+
+This is a template for OmicsChart PDF reports. It includes several custom formatting options.
