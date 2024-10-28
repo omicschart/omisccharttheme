@@ -12,7 +12,11 @@ pdf_report <- function(toc = TRUE, ...) {
       package = "omicscharttheme"
     )
     tx  <- readLines(tex)
-    tx2  <- gsub(pattern = "omicschart-logo.png", replace = logo, x = tx)
+    tx2  <- gsub(
+      pattern = "\\{omicschart-logo.png\\}",
+      replace = paste0("\\{", logo, "\\}"),
+      x = tx
+    )
     writeLines(tx2, con=tex)
 
     rmarkdown::pdf_document(

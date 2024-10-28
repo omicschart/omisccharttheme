@@ -17,7 +17,11 @@ html_report <- function( toc = TRUE, theme = "united", ...) {
     package = "omicscharttheme"
   )
   tx  <- readLines(header)
-  tx2  <- gsub(pattern = "omicschart-logo.png", replace = logo, x = tx)
+  tx2  <- gsub(
+    pattern = "\"omicschart-logo.png\"",
+    replace = paste0("\"", logo, "\""),
+    x = tx
+  )
   writeLines(tx2, con=header)
 
   rmarkdown::html_document(
