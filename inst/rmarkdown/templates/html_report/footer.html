@@ -7,3 +7,95 @@
 <script>
     document.getElementById("current-date").textContent = new Date().toLocaleDateString();
 </script>
+
+<!-- Script to listen to user selection to allow commenting in PREON -->
+<script>
+  document.addEventListener('mouseup', function () {
+    const selection = window.getSelection();
+    const text = selection.toString();
+    if (text.length > 0) {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      window.parent.postMessage({
+        type: 'TEXT_SELECTED',
+        text: text,
+        top: rect.top + window.scrollY,
+        left: rect.left + window.scrollX
+      }, '*');
+    }
+  });
+</script>
+
+<!-- Script to listen to scrolling event to scroll report to a comment location and highlight the comment in PREON -->
+<script>
+  let previousHighlight;
+
+  window.addEventListener("message", (event) => {
+    if (event.data?.type === "SCROLL_TO_ANCHOR") {
+      const scrollTarget = Math.max(event.data.top - 50, 0);
+      const textToHighlight = event.data.text?.trim();
+
+      // Scroll smoothly
+      window.scrollTo({ top: scrollTarget, behavior: "smooth" });
+
+      // Remove previous highlight
+      if (previousHighlight) {
+        previousHighlight.outerHTML = previousHighlight.innerText;
+        previousHighlight = null;
+      }
+
+      if (!textToHighlight) return;
+
+      // Get the closest DOM element near the anchor_top
+      const elements = Array.from(document.querySelectorAll('p, div, span, li'));
+
+      // Find the closest element (top offset close to event.data.top)
+      let closest = null;
+      let minDiff = Infinity;
+
+      for (const el of elements) {
+        const rect = el.getBoundingClientRect();
+        const elTop = rect.top + window.scrollY;
+
+        const diff = Math.abs(elTop - event.data.top);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closest = el;
+        }
+      }
+
+      if (closest && closest.textContent?.includes(textToHighlight)) {
+        const html = closest.innerHTML;
+        const escaped = textToHighlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(escaped, 'i'); // Match one occurrence, case insensitive
+
+        closest.innerHTML = html.replace(regex, (match) => {
+          return `<span class="comment-highlight">${match}</span>`;
+        });
+
+        previousHighlight = closest.querySelector('.comment-highlight');
+      }
+    }
+  });
+</script>
+
+<script>
+  // Resize all Plotly graphs on load to avoid layout issues in iframes
+  window.addEventListener("load", () => {
+    if (window.Plotly) {
+      const plots = document.querySelectorAll('.js-plotly-plot');
+      plots.forEach(p => {
+        window.Plotly.Plots.resize(p);
+      });
+    }
+  });
+</script>
+
+<style>
+  .comment-highlight {
+    background-color: #ffff0070;
+    border-radius: 3px;
+    padding: 0 2px;
+    transition: background-color 0.5s ease;
+  }
+</style>

@@ -3,7 +3,7 @@
 #' @param ... Arguments passed to the output format function.
 #' @return A modified HTML or PDF output format with the custom theme.
 #' @export
-html_report <- function( toc = TRUE, theme = "united", ...) {
+html_report <- function( toc = TRUE, theme = "flatly", ...) {
   css <- system.file(
     "rmarkdown/templates/html_report/custom.css",
     package = "omicscharttheme"
