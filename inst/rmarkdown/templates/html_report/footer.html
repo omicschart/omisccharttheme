@@ -1,7 +1,7 @@
 <div style="text-align: center; padding-top: 20px; border-top: 1px solid #ccc; margin-top: 40px;">
     <p>Prepared By <strong>OmicsChart Tech Ltd</strong></p>
     <p>Date: <span id="current-date"></span></p>
-    <img src="omicschart-logo.png" alt="Logo" style="width: 200px; margin-bottom: 100px;">
+    <img src="omicschart-logo.png" alt="Logo" style="width: 200px; margin-bottom: 100px;" class='logo'>
 </div>
 
 <script>
@@ -89,6 +89,109 @@
       });
     }
   });
+</script>
+
+
+<!-- Script to Add "Save to Favorites" and "Add to Report" buttons and event handlers -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Dispatch helper
+  function dispatchOCPlot(ocPlot, mode = "save") {
+    const eventName = mode === "add" ? "ADD_OC_PLOT" : "SAVE_OC_PLOT";
+    window.parent.postMessage(
+      {
+        type: eventName,
+        payload: ocPlot
+      },
+      "*"
+    );
+  }
+
+
+  // Wrap every base64 image (from R plots) in an OCPlot wrapper
+  document.querySelectorAll("img").forEach(img => {
+
+    if (img.classList.contains("logo")) return; // Do not target logos
+
+    //get component props. For img it's src, width and height
+    const component_props = {
+      src: img.src,
+      width: img.getAttribute("width") || img.width,
+      height: img.getAttribute("height") || img.height
+    };
+
+    const ocPlot = {
+      library: "image",
+      component: "img",
+      component_props
+    };
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "oc-plot-wrapper";
+
+    const btnBar = document.createElement("div");
+    btnBar.className = "oc-button-container";
+
+    const btnSave = document.createElement("button");
+    btnSave.className = "oc-button";
+    btnSave.innerText = "Save to Favorites";
+    btnSave.onclick = () => dispatchOCPlot(ocPlot, "save");
+
+    const btnAdd = document.createElement("button");
+    btnAdd.className = "oc-button";
+    btnAdd.innerText = "Add to My Report";
+    btnAdd.onclick = () => dispatchOCPlot(ocPlot, "add");
+
+    btnBar.appendChild(btnSave);
+    btnBar.appendChild(btnAdd);
+
+    img.parentNode.insertBefore(wrapper, img);
+    wrapper.appendChild(img);
+    wrapper.appendChild(btnBar);
+  });
+
+  // Wrap Plotly plots if present
+  document.querySelectorAll(".plotly.html-widget").forEach(div => {
+
+    const component_props = {
+      data: div.data,
+      layout: div.layout,
+      config: div.config,
+      style: div.getAttribute("style") || undefined
+    };
+
+    const ocPlot = {
+      library: "plotly",
+      component: "Plot",
+      component_props
+    };
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "oc-plot-wrapper";
+
+    const btnBar = document.createElement("div");
+    btnBar.className = "oc-button-container";
+
+    const btnSave = document.createElement("button");
+    btnSave.className = "oc-button";
+    btnSave.innerText = "Save to Favorites";
+    btnSave.onclick = () => dispatchOCPlot(ocPlot, "save");
+
+    const btnAdd = document.createElement("button");
+    btnAdd.className = "oc-button";
+    btnAdd.innerText = "Add to My Report";
+    btnAdd.onclick = () => dispatchOCPlot(ocPlot, "add");
+
+    btnBar.appendChild(btnSave);
+    btnBar.appendChild(btnAdd);
+
+    div.parentNode.insertBefore(wrapper, div);
+    wrapper.appendChild(div);
+    wrapper.appendChild(btnBar);
+  });
+
+});
 </script>
 
 <style>
